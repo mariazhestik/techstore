@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+
+<GridPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.techstore.Controllers.LoginController">
+    <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+    <hgap>10</hgap>
+    <vgap>10</vgap>
+
+    <TextField fx:id="usernameField" GridPane.rowIndex="0" GridPane.columnIndex="1" promptText="Username"/>
+    <PasswordField fx:id="passwordField" GridPane.rowIndex="1" GridPane.columnIndex="1" promptText="Password"/>
+    <Button text="Login" onAction="#handleLogin" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+</GridPane>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Button?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.techstore.Controllers.Admin.products.ProductsController">
+    <ListView fx:id="productsListView"/>
+    <Button text="Add Product" onAction="#switchToAddProduct"/>
+    <Button text="Edit Product" onAction="#switchToEditProduct"/>
+    <Button text="View Product" onAction="#switchToViewProduct"/>
+    <Button text="Delete Product" onAction="#switchToDeleteProduct"/>
+</VBox>

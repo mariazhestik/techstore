@@ -15,6 +15,22 @@ public class Product {
     private String battery;
     private String status;
 
+    public Product(int productId, int brandId, String name, double price, String processor, String memory, String ram, String screenType, String materialOfCorps, String colour, String dimension, String battery, String status) {
+        this.productId = productId;
+        this.brandId = brandId;
+        this.name = name;
+        this.price = price;
+        this.processor = processor;
+        this.memory = memory;
+        this.ram = ram;
+        this.screenType = screenType;
+        this.materialOfCorps = materialOfCorps;
+        this.colour = colour;
+        this.dimension = dimension;
+        this.battery = battery;
+        this.status = status;
+    }
+
     public int getProductId() {
         return productId;
     }
@@ -117,5 +133,10 @@ public class Product {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return name + " (" + status + ")";
     }
 }
