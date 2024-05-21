@@ -4,12 +4,14 @@ import com.example.techstore.Database.DatabaseConnection;
 import com.example.techstore.Models.Product;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -22,16 +24,85 @@ import java.sql.SQLException;
 public class ProductsController {
 
     @FXML
-    private ListView<Product> productsListView;
+    private TableView<Product> productsTableView;
+    @FXML
+    private TableColumn<Product, Integer> productIdColumn;
+    @FXML
+    private TableColumn<Product, Integer> brandIdColumn;
+    @FXML
+    private TableColumn<Product, String> nameColumn;
+    @FXML
+    private TableColumn<Product, Double> priceColumn;
+    @FXML
+    private TableColumn<Product, String> processorColumn;
+    @FXML
+    private TableColumn<Product, String> memoryColumn;
+    @FXML
+    private TableColumn<Product, String> ramColumn;
+    @FXML
+    private TableColumn<Product, String> screenTypeColumn;
+    @FXML
+    private TableColumn<Product, String> materialOfCorpsColumn;
+    @FXML
+    private TableColumn<Product, String> colourColumn;
+    @FXML
+    private TableColumn<Product, String> dimensionColumn;
+    @FXML
+    private TableColumn<Product, String> batteryColumn;
+    @FXML
+    private TableColumn<Product, String> statusColumn;
+    @FXML
+    private TextField searchField;
     @FXML
     private Button addButton;
 
     private ObservableList<Product> productsList;
+    private FilteredList<Product> filteredData;
 
     @FXML
     public void initialize() {
         productsList = FXCollections.observableArrayList();
+        filteredData = new FilteredList<>(productsList, p -> true);
+
+        productIdColumn.setCellValueFactory(new PropertyValueFactory<>("productId"));
+        brandIdColumn.setCellValueFactory(new PropertyValueFactory<>("brandId"));
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
+        processorColumn.setCellValueFactory(new PropertyValueFactory<>("processor"));
+        memoryColumn.setCellValueFactory(new PropertyValueFactory<>("memory"));
+        ramColumn.setCellValueFactory(new PropertyValueFactory<>("ram"));
+        screenTypeColumn.setCellValueFactory(new PropertyValueFactory<>("screenType"));
+        materialOfCorpsColumn.setCellValueFactory(new PropertyValueFactory<>("materialOfCorps"));
+        colourColumn.setCellValueFactory(new PropertyValueFactory<>("colour"));
+        dimensionColumn.setCellValueFactory(new PropertyValueFactory<>("dimension"));
+        batteryColumn.setCellValueFactory(new PropertyValueFactory<>("battery"));
+        statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+
+        // Создаем SortedList, которая оборачивает FilteredList
+        SortedList<Product> sortedData = new SortedList<>(filteredData);
+        sortedData.comparatorProperty().bind(productsTableView.comparatorProperty());
+
+        productsTableView.setItems(sortedData);
+
         loadProducts();
+
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredData.setPredicate(product -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+                String lowerCaseFilter = newValue.toLowerCase();
+
+                if (product.getName().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                } else if (String.valueOf(product.getProductId()).contains(lowerCaseFilter)) {
+                    return true;
+                } else if (product.getProcessor().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                }
+                return false;
+            });
+        });
     }
 
     private void loadProducts() {
@@ -60,8 +131,6 @@ public class ProductsController {
                 productsList.add(product);
             }
 
-            productsListView.setItems(productsList);
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -87,7 +156,7 @@ public class ProductsController {
 
     @FXML
     private void switchToEditProduct() {
-        Product selectedProduct = productsListView.getSelectionModel().getSelectedItem();
+        Product selectedProduct = productsTableView.getSelectionModel().getSelectedItem();
         if (selectedProduct != null) {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/techstore/Views/EditProduct.fxml"));
@@ -112,7 +181,7 @@ public class ProductsController {
 
     @FXML
     private void switchToViewProduct() {
-        Product selectedProduct = productsListView.getSelectionModel().getSelectedItem();
+        Product selectedProduct = productsTableView.getSelectionModel().getSelectedItem();
         if (selectedProduct != null) {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/techstore/Views/ViewProduct.fxml"));
@@ -135,7 +204,7 @@ public class ProductsController {
 
     @FXML
     private void switchToDeleteProduct() {
-        Product selectedProduct = productsListView.getSelectionModel().getSelectedItem();
+        Product selectedProduct = productsTableView.getSelectionModel().getSelectedItem();
         if (selectedProduct != null) {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/techstore/Views/DeleteProduct.fxml"));

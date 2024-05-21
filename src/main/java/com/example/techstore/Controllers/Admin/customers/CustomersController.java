@@ -4,12 +4,14 @@ import com.example.techstore.Database.DatabaseConnection;
 import com.example.techstore.Models.Customer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -25,13 +27,39 @@ public class CustomersController {
     private ListView<Customer> customersListView;
     @FXML
     private Button addButton;
+    @FXML
+    private TextField searchField;
 
     private ObservableList<Customer> customersList;
+    private FilteredList<Customer> filteredData;
 
     @FXML
     public void initialize() {
         customersList = FXCollections.observableArrayList();
+        filteredData = new FilteredList<>(customersList, p -> true);
+
+        customersListView.setItems(filteredData);
         loadCustomers();
+
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredData.setPredicate(customer -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+                String lowerCaseFilter = newValue.toLowerCase();
+
+                if (customer.getName().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                } else if (String.valueOf(customer.getCustomerId()).contains(lowerCaseFilter)) {
+                    return true;
+                } else if (customer.getContact().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                } else if (customer.getAddress().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                }
+                return false;
+            });
+        });
     }
 
     private void loadCustomers() {
@@ -50,8 +78,6 @@ public class CustomersController {
                 Customer customer = new Customer(customerId, name, contact, address);
                 customersList.add(customer);
             }
-
-            customersListView.setItems(customersList);
 
         } catch (SQLException e) {
             e.printStackTrace();

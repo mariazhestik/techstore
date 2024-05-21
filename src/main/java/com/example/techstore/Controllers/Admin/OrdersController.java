@@ -7,13 +7,14 @@ import com.example.techstore.Controllers.Admin.orders.EditOrderController;
 import com.example.techstore.Controllers.Admin.orders.ViewOrderController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -26,16 +27,66 @@ import java.sql.SQLException;
 public class OrdersController {
 
     @FXML
-    private ListView<Orders> ordersListView;
+    private TableView<Orders> ordersTableView;
+    @FXML
+    private TableColumn<Orders, Integer> orderIdColumn;
+    @FXML
+    private TableColumn<Orders, Integer> customerIdColumn;
+    @FXML
+    private TableColumn<Orders, Integer> employeeIdColumn;
+    @FXML
+    private TableColumn<Orders, Integer> productIdColumn;
+    @FXML
+    private TableColumn<Orders, String> dateColumn;
+    @FXML
+    private TableColumn<Orders, Double> totalAmountColumn;
+    @FXML
+    private TableColumn<Orders, String> statusColumn;
+    @FXML
+    private TextField searchField;
     @FXML
     private Button addButton;
 
     private ObservableList<Orders> ordersList;
+    private FilteredList<Orders> filteredData;
 
     @FXML
     public void initialize() {
         ordersList = FXCollections.observableArrayList();
+        filteredData = new FilteredList<>(ordersList, p -> true);
+
+        orderIdColumn.setCellValueFactory(new PropertyValueFactory<>("orderId"));
+        customerIdColumn.setCellValueFactory(new PropertyValueFactory<>("customerId"));
+        employeeIdColumn.setCellValueFactory(new PropertyValueFactory<>("employeeId"));
+        productIdColumn.setCellValueFactory(new PropertyValueFactory<>("productId"));
+        dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
+        totalAmountColumn.setCellValueFactory(new PropertyValueFactory<>("totalAmount"));
+        statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+
+        SortedList<Orders> sortedData = new SortedList<>(filteredData);
+        sortedData.comparatorProperty().bind(ordersTableView.comparatorProperty());
+
+        ordersTableView.setItems(sortedData);
+
         loadOrders();
+
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredData.setPredicate(order -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+                String lowerCaseFilter = newValue.toLowerCase();
+
+                if (order.getDate().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                } else if (String.valueOf(order.getOrderId()).contains(lowerCaseFilter)) {
+                    return true;
+                } else if (order.getStatus().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                }
+                return false;
+            });
+        });
     }
 
     private void loadOrders() {
@@ -57,8 +108,6 @@ public class OrdersController {
                 Orders order = new Orders(orderId, customerId, employeeId, productId, date, totalAmount, status);
                 ordersList.add(order);
             }
-
-            ordersListView.setItems(ordersList);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -85,7 +134,7 @@ public class OrdersController {
 
     @FXML
     private void switchToEditOrder() {
-        Orders selectedOrder = ordersListView.getSelectionModel().getSelectedItem();
+        Orders selectedOrder = ordersTableView.getSelectionModel().getSelectedItem();
         if (selectedOrder != null) {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/techstore/Views/EditOrder.fxml"));
@@ -110,7 +159,7 @@ public class OrdersController {
 
     @FXML
     private void switchToViewOrder() {
-        Orders selectedOrder = ordersListView.getSelectionModel().getSelectedItem();
+        Orders selectedOrder = ordersTableView.getSelectionModel().getSelectedItem();
         if (selectedOrder != null) {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/techstore/Views/ViewOrder.fxml"));
@@ -133,7 +182,7 @@ public class OrdersController {
 
     @FXML
     private void switchToDeleteOrder() {
-        Orders selectedOrder = ordersListView.getSelectionModel().getSelectedItem();
+        Orders selectedOrder = ordersTableView.getSelectionModel().getSelectedItem();
         if (selectedOrder != null) {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/techstore/Views/DeleteOrder.fxml"));
