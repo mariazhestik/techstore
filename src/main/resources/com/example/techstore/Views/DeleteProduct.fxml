@@ -7,9 +7,9 @@
 
 <VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.techstore.Controllers.Admin.products.DeleteProductController" spacing="10" alignment="CENTER" style="-fx-padding: 20;">
     <Label text="Are you sure you want to delete the following product?" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
-    <Label fx:id="nameLabel" style="-fx-font-size: 14px; -fx-text-fill: #ff0000;"/>
+    <Label fx:id="nameLabel" style="-fx-font-size: 14px; -fx-text-fill: #333333;"/>
     <HBox spacing="10" alignment="CENTER">
-        <Button fx:id="deleteButton" text="Delete" onAction="#handleDeleteProduct" style="-fx-background-color: #ff0000; -fx-text-fill: white; -fx-font-weight: bold;"/>
-        <Button text="Cancel" onAction="#handleCancel" style="-fx-background-color: #d3d3d3; -fx-font-weight: bold;"/>
+        <Button fx:id="deleteButton" text="Delete" onAction="#handleDeleteProduct" style="-fx-background-color: #d9534f; -fx-text-fill: white;"/>
+        <Button text="Cancel" onAction="#handleCancel" style="-fx-background-color: #f0f0f0; -fx-text-fill: black;"/>
     </HBox>
 </VBox>

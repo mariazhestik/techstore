@@ -4,8 +4,8 @@ import com.example.techstore.Database.DatabaseConnection;
 import com.example.techstore.Models.Product;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -92,19 +92,25 @@ public class EditProductController {
 
             int rowsUpdated = statement.executeUpdate();
             if (rowsUpdated > 0) {
-                showAlert(AlertType.INFORMATION, "Product updated successfully!");
+                showAlert(Alert.AlertType.INFORMATION, "Product updated successfully!");
+                closeWindow();
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            showAlert(AlertType.ERROR, "Error updating product: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Error updating product: " + e.getMessage());
         }
     }
 
-    private void showAlert(AlertType alertType, String message) {
+    private void showAlert(Alert.AlertType alertType, String message) {
         Alert alert = new Alert(alertType);
         alert.setTitle("Product Update");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private void closeWindow() {
+        Stage stage = (Stage) nameField.getScene().getWindow();
+        stage.close();
     }
 }

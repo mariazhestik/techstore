@@ -36,8 +36,10 @@ public class LoginController {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/com/example/techstore/Views/DashboardView.fxml"));
             Stage stage = (Stage) usernameField.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
             stage.setTitle("TechStore Admin Dashboard");
+            stage.setMaximized(true); // Открываем на весь экран
         } catch (IOException e) {
             e.printStackTrace();
             showAlert("Error", "Failed to load the dashboard.");
