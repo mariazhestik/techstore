@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.GridPane?>
@@ -12,10 +13,10 @@
         <padding>
             <Insets top="20" right="20" bottom="20" left="20"/>
         </padding>
-        <TextField fx:id="productIdField" promptText="Product ID" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+        <ComboBox fx:id="productIdComboBox" promptText="Product ID" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.columnSpan="2" editable="true"/>
         <DatePicker fx:id="deliveryDatePicker" promptText="Delivery Date" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
         <TextField fx:id="quantityField" promptText="Quantity" GridPane.rowIndex="2" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
-        <TextField fx:id="employeeIdField" promptText="Employee ID" GridPane.rowIndex="3" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+        <ComboBox fx:id="employeeIdComboBox" promptText="Employee ID" GridPane.rowIndex="3" GridPane.columnIndex="0" GridPane.columnSpan="2" editable="true"/>
     </GridPane>
     <Button fx:id="saveButton" text="Save" onAction="#handleSaveDelivery" style="-fx-background-color: #0275d8; -fx-text-fill: white; -fx-font-weight: bold;"/>
     <Button fx:id="cancelButton" text="Cancel" onAction="#handleCancel" style="-fx-background-color: #f0f0f0; -fx-text-fill: black;"/>

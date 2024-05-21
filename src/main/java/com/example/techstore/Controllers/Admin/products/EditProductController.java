@@ -2,13 +2,17 @@ package com.example.techstore.Controllers.Admin.products;
 
 import com.example.techstore.Database.DatabaseConnection;
 import com.example.techstore.Models.Product;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class EditProductController {
@@ -16,60 +20,138 @@ public class EditProductController {
     @FXML
     private TextField nameField;
     @FXML
-    private TextField brandIdField;
+    private ComboBox<String> brandIdComboBox;
     @FXML
     private TextField priceField;
     @FXML
-    private TextField processorField;
+    private ComboBox<String> processorComboBox;
     @FXML
-    private TextField memoryField;
+    private ComboBox<String> memoryComboBox;
     @FXML
-    private TextField ramField;
+    private ComboBox<String> ramComboBox;
     @FXML
-    private TextField screenTypeField;
+    private ComboBox<String> screenTypeComboBox;
     @FXML
-    private TextField materialOfCorpsField;
+    private ComboBox<String> materialOfCorpsComboBox;
     @FXML
-    private TextField colourField;
+    private ComboBox<String> colourComboBox;
     @FXML
-    private TextField dimensionField;
+    private ComboBox<String> dimensionComboBox;
     @FXML
-    private TextField batteryField;
+    private ComboBox<String> batteryComboBox;
     @FXML
-    private TextField statusField;
+    private ComboBox<String> statusComboBox;
 
     private Product product;
 
     public void setProduct(Product product) {
         this.product = product;
         nameField.setText(product.getName());
-        brandIdField.setText(String.valueOf(product.getBrandId()));
+        brandIdComboBox.setValue(String.valueOf(product.getBrandId()));
         priceField.setText(String.valueOf(product.getPrice()));
-        processorField.setText(product.getProcessor());
-        memoryField.setText(product.getMemory());
-        ramField.setText(product.getRam());
-        screenTypeField.setText(product.getScreenType());
-        materialOfCorpsField.setText(product.getMaterialOfCorps());
-        colourField.setText(product.getColour());
-        dimensionField.setText(product.getDimension());
-        batteryField.setText(product.getBattery());
-        statusField.setText(product.getStatus());
+        processorComboBox.setValue(product.getProcessor());
+        memoryComboBox.setValue(product.getMemory());
+        ramComboBox.setValue(product.getRam());
+        screenTypeComboBox.setValue(product.getScreenType());
+        materialOfCorpsComboBox.setValue(product.getMaterialOfCorps());
+        colourComboBox.setValue(product.getColour());
+        dimensionComboBox.setValue(product.getDimension());
+        batteryComboBox.setValue(product.getBattery());
+        statusComboBox.setValue(product.getStatus());
+    }
+
+    @FXML
+    public void initialize() {
+        loadBrandIds();
+        loadProcessors();
+        loadMemoryOptions();
+        loadRamOptions();
+        loadScreenTypes();
+        loadMaterialOfCorpsOptions();
+        loadColourOptions();
+        loadStatusOptions();
+        loadDimensionOptions();
+        loadBatteryOptions();
+    }
+
+    private void loadBrandIds() {
+        ObservableList<String> brandIds = FXCollections.observableArrayList();
+        String query = "SELECT brand_id, name FROM brand";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                int brandId = resultSet.getInt("brand_id");
+                String name = resultSet.getString("name");
+                brandIds.add(brandId + " - " + name);
+            }
+            brandIdComboBox.setItems(brandIds);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error loading brand IDs: " + e.getMessage());
+        }
+    }
+
+    private void loadProcessors() {
+        ObservableList<String> processors = FXCollections.observableArrayList("Snapdragon 865", "A14 Bionic", "Kirin 990", "Snapdragon 888");
+        processorComboBox.setItems(processors);
+    }
+
+    private void loadMemoryOptions() {
+        ObservableList<String> memoryOptions = FXCollections.observableArrayList("128GB", "256GB", "512GB");
+        memoryComboBox.setItems(memoryOptions);
+    }
+
+    private void loadRamOptions() {
+        ObservableList<String> ramOptions = FXCollections.observableArrayList("4GB", "8GB", "12GB");
+        ramComboBox.setItems(ramOptions);
+    }
+
+    private void loadScreenTypes() {
+        ObservableList<String> screenTypes = FXCollections.observableArrayList("AMOLED", "OLED", "IPS LCD");
+        screenTypeComboBox.setItems(screenTypes);
+    }
+
+    private void loadMaterialOfCorpsOptions() {
+        ObservableList<String> materialOptions = FXCollections.observableArrayList("Glass", "Aluminum", "Plastic");
+        materialOfCorpsComboBox.setItems(materialOptions);
+    }
+
+    private void loadColourOptions() {
+        ObservableList<String> colourOptions = FXCollections.observableArrayList("Black", "White", "Blue", "Gray", "Green");
+        colourComboBox.setItems(colourOptions);
+    }
+
+    private void loadStatusOptions() {
+        ObservableList<String> statusOptions = FXCollections.observableArrayList("Available", "Out of Stock", "Discontinued");
+        statusComboBox.setItems(statusOptions);
+    }
+
+    private void loadDimensionOptions() {
+        ObservableList<String> dimensionOptions = FXCollections.observableArrayList("6.7\"", "6.8\"", "6.5\"");
+        dimensionComboBox.setItems(dimensionOptions);
+    }
+
+    private void loadBatteryOptions() {
+        ObservableList<String> batteryOptions = FXCollections.observableArrayList("4500mAh", "4300mAh", "4000mAh");
+        batteryComboBox.setItems(batteryOptions);
     }
 
     @FXML
     private void handleSaveProduct() {
         String name = nameField.getText();
-        int brandId = Integer.parseInt(brandIdField.getText());
+        int brandId = extractId(brandIdComboBox.getValue());
         double price = Double.parseDouble(priceField.getText());
-        String processor = processorField.getText();
-        String memory = memoryField.getText();
-        String ram = ramField.getText();
-        String screenType = screenTypeField.getText();
-        String materialOfCorps = materialOfCorpsField.getText();
-        String colour = colourField.getText();
-        String dimension = dimensionField.getText();
-        String battery = batteryField.getText();
-        String status = statusField.getText();
+        String processor = processorComboBox.getValue();
+        String memory = memoryComboBox.getValue();
+        String ram = ramComboBox.getValue();
+        String screenType = screenTypeComboBox.getValue();
+        String materialOfCorps = materialOfCorpsComboBox.getValue();
+        String colour = colourComboBox.getValue();
+        String dimension = dimensionComboBox.getValue();
+        String battery = batteryComboBox.getValue();
+        String status = statusComboBox.getValue();
 
         String query = "UPDATE product SET brand_id = ?, name = ?, price = ?, processor = ?, memory = ?, RAM = ?, screenType = ?, materialOfCorps = ?, colour = ?, dimension = ?, Battery = ?, status = ? WHERE product_id = ?";
 
@@ -98,6 +180,14 @@ public class EditProductController {
         } catch (SQLException e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Error updating product: " + e.getMessage());
+        }
+    }
+
+    private int extractId(String comboBoxValue) {
+        if (comboBoxValue != null && comboBoxValue.contains(" - ")) {
+            return Integer.parseInt(comboBoxValue.split(" - ")[0]);
+        } else {
+            return Integer.parseInt(comboBoxValue);
         }
     }
 

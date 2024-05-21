@@ -2,6 +2,8 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.VBox?>
@@ -11,12 +13,12 @@
         <padding>
             <Insets top="20" right="20" bottom="20" left="20"/>
         </padding>
-        <TextField fx:id="customerIdField" promptText="Customer ID" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
-        <TextField fx:id="employeeIdField" promptText="Employee ID" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
-        <TextField fx:id="productIdField" promptText="Product ID" GridPane.rowIndex="2" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
-        <TextField fx:id="dateField" promptText="Date" GridPane.rowIndex="3" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+        <ComboBox fx:id="customerIdComboBox" promptText="Customer ID" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.columnSpan="2" editable="true"/>
+        <ComboBox fx:id="employeeIdComboBox" promptText="Employee ID" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="2" editable="true"/>
+        <ComboBox fx:id="productIdComboBox" promptText="Product ID" GridPane.rowIndex="2" GridPane.columnIndex="0" GridPane.columnSpan="2" editable="true"/>
+        <DatePicker fx:id="datePicker" promptText="Date" GridPane.rowIndex="3" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
         <TextField fx:id="totalAmountField" promptText="Total Amount" GridPane.rowIndex="4" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
-        <TextField fx:id="statusField" promptText="Status" GridPane.rowIndex="5" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+        <ComboBox fx:id="statusComboBox" promptText="Status" GridPane.rowIndex="5" GridPane.columnIndex="0" GridPane.columnSpan="2" editable="true"/>
     </GridPane>
     <Button text="Add Order" onAction="#handleAddOrder" style="-fx-background-color: #5cb85c; -fx-text-fill: white; -fx-font-weight: bold;"/>
 </VBox>

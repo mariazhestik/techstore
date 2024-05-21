@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.VBox?>
@@ -12,17 +13,18 @@
             <Insets top="20" right="20" bottom="20" left="20"/>
         </padding>
         <TextField fx:id="nameField" promptText="Name" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
-        <TextField fx:id="brandIdField" promptText="Brand ID" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+        <ComboBox fx:id="brandIdComboBox" promptText="Brand ID" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="2" editable="true"/>
         <TextField fx:id="priceField" promptText="Price" GridPane.rowIndex="2" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
-        <TextField fx:id="processorField" promptText="Processor" GridPane.rowIndex="3" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
-        <TextField fx:id="memoryField" promptText="Memory" GridPane.rowIndex="4" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
-        <TextField fx:id="ramField" promptText="RAM" GridPane.rowIndex="5" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
-        <TextField fx:id="screenTypeField" promptText="Screen Type" GridPane.rowIndex="6" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
-        <TextField fx:id="materialOfCorpsField" promptText="Material of Corps" GridPane.rowIndex="7" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
-        <TextField fx:id="colourField" promptText="Colour" GridPane.rowIndex="8" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
-        <TextField fx:id="dimensionField" promptText="Dimension" GridPane.rowIndex="9" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
-        <TextField fx:id="batteryField" promptText="Battery" GridPane.rowIndex="10" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
-        <TextField fx:id="statusField" promptText="Status" GridPane.rowIndex="11" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+        <ComboBox fx:id="processorComboBox" promptText="Processor" GridPane.rowIndex="3" GridPane.columnIndex="0" GridPane.columnSpan="2" editable="true"/>
+        <ComboBox fx:id="memoryComboBox" promptText="Memory" GridPane.rowIndex="4" GridPane.columnIndex="0" GridPane.columnSpan="2" editable="true"/>
+        <ComboBox fx:id="ramComboBox" promptText="RAM" GridPane.rowIndex="5" GridPane.columnIndex="0" GridPane.columnSpan="2" editable="true"/>
+        <ComboBox fx:id="screenTypeComboBox" promptText="Screen Type" GridPane.rowIndex="6" GridPane.columnIndex="0" GridPane.columnSpan="2" editable="true"/>
+        <ComboBox fx:id="materialOfCorpsComboBox" promptText="Material of Corps" GridPane.rowIndex="7" GridPane.columnIndex="0" GridPane.columnSpan="2" editable="true"/>
+        <ComboBox fx:id="colourComboBox" promptText="Colour" GridPane.rowIndex="8" GridPane.columnIndex="0" GridPane.columnSpan="2" editable="true"/>
+        <ComboBox fx:id="dimensionComboBox" promptText="Dimension" GridPane.rowIndex="9" GridPane.columnIndex="0" GridPane.columnSpan="2" editable="true"/>
+        <ComboBox fx:id="batteryComboBox" promptText="Battery" GridPane.rowIndex="10" GridPane.columnIndex="0" GridPane.columnSpan="2" editable="true"/>
+
+        <ComboBox fx:id="statusComboBox" promptText="Status" GridPane.rowIndex="11" GridPane.columnIndex="0" GridPane.columnSpan="2" editable="true"/>
     </GridPane>
     <Button text="Save Product" onAction="#handleSaveProduct" style="-fx-background-color: #0275d8; -fx-text-fill: white; -fx-font-weight: bold;"/>
 </VBox>
