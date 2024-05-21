@@ -53,7 +53,7 @@ INSERT INTO `customer` (`customer_id`, `name`, `contact`, `address`) VALUES
 
 -- Структура таблиці `delivery`
 CREATE TABLE `delivery` (
-                            `delivery_id` int(11) NOT NULL,
+                            `delivery_id` int(11) NOT NULL AUTO_INCREMENT,
                             `product_id` int(11) DEFAULT NULL,
                             `date` date DEFAULT NULL,
                             `quantity` int(11) DEFAULT NULL,

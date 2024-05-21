@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.GridPane?>
+
+<GridPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.techstore.Controllers.Admin.deliveries.ViewDeliveryController" hgap="10" vgap="10">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="Delivery ID:" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+    <Label fx:id="deliveryIdLabel" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+    <Label text="Product ID:" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+    <Label fx:id="productIdLabel" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+    <Label text="Delivery Date:" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+    <Label fx:id="deliveryDateLabel" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+    <Label text="Quantity:" GridPane.rowIndex="3" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+    <Label fx:id="quantityLabel" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+    <Label text="Employee ID:" GridPane.rowIndex="4" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+    <Label fx:id="employeeIdLabel" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+</GridPane>

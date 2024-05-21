@@ -54,5 +54,11 @@ public class Delivery {
     public void setEmployeeId(int employeeId) {
         this.employeeId = employeeId;
     }
+
+    @Override
+    public String toString() {
+        return "Delivery ID: " + deliveryId + ", Product ID: " + productId + ", Date: " + deliveryDate + ", Quantity: " + quantity + ", Employee ID: " + employeeId;
+    }
+
 }
 

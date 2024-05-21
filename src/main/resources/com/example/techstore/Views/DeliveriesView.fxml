@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.techstore.Controllers.Admin.deliveries.DeliveriesController" spacing="10" alignment="CENTER" style="-fx-padding: 20;">
+    <ListView fx:id="deliveriesListView" VBox.vgrow="ALWAYS" style="-fx-pref-width: 300px; -fx-pref-height: 400px;"/>
+    <HBox spacing="10">
+        <Button text="Add Delivery" onAction="#switchToAddDelivery" style="-fx-background-color: #5cb85c; -fx-text-fill: white;"/>
+        <Button text="Edit Delivery" onAction="#switchToEditDelivery" style="-fx-background-color: #0275d8; -fx-text-fill: white;"/>
+        <Button text="View Delivery" onAction="#switchToViewDelivery" style="-fx-background-color: #f0ad4e; -fx-text-fill: white;"/>
+        <Button text="Delete Delivery" onAction="#switchToDeleteDelivery" style="-fx-background-color: #d9534f; -fx-text-fill: white;"/>
+    </HBox>
+</VBox>

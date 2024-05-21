@@ -31,7 +31,7 @@ public class DashboardController {
 
     @FXML
     private void handleManageDeliveries(ActionEvent event) {
-        showAlert("Manage Deliveries", "Here you can manage deliveries.");
+        loadView("/com/example/techstore/Views/DeliveriesView.fxml");
     }
 
     private void loadView(String fxmlPath) {
