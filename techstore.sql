@@ -37,7 +37,7 @@ INSERT INTO `brand` (`brand_id`, `name`) VALUES
 
 -- Структура таблиці `customer`
 CREATE TABLE `customer` (
-                            `customer_id` int(11) NOT NULL,
+                            `customer_id` int(11) NOT NULL AUTO_INCREMENT,
                             `name` varchar(255) DEFAULT NULL,
                             `contact` varchar(255) DEFAULT NULL,
                             `address` varchar(255) DEFAULT NULL,
