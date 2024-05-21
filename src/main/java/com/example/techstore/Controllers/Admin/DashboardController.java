@@ -21,7 +21,7 @@ public class DashboardController {
 
     @FXML
     private void handleManageOrders(ActionEvent event) {
-        showAlert("Manage Orders", "Here you can manage orders.");
+        loadView("/com/example/techstore/Views/OrdersView.fxml");
     }
 
     @FXML

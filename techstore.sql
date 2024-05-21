@@ -95,7 +95,7 @@ INSERT INTO `employee` (`employee_id`, `name`) VALUES
 
 -- Структура таблиці `orders`
 CREATE TABLE `orders` (
-                          `order_id` int(11) NOT NULL,
+                          `order_id` int(11) NOT NULL AUTO_INCREMENT,
                           `customer_id` int(11) DEFAULT NULL,
                           `employee_id` int(11) DEFAULT NULL,
                           `product_id` int(11) DEFAULT NULL,

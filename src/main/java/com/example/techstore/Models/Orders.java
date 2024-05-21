@@ -74,5 +74,11 @@ public class Orders {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        return "Order ID: " + orderId + ", Date: " + date + ", Status: " + status;
+    }
+
 }
 

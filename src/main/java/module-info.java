@@ -9,6 +9,7 @@ module com.example.techstore {
     opens com.example.techstore.Controllers.Admin to javafx.fxml;
     opens com.example.techstore.Controllers.Admin.products to javafx.fxml;
     opens com.example.techstore.Views to javafx.fxml;
+    opens com.example.techstore.Controllers.Admin.orders to javafx.fxml;
 
     exports com.example.techstore;
     exports com.example.techstore.Controllers.Admin;

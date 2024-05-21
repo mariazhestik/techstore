@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.text.Font?>
+
+<GridPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.techstore.Controllers.Admin.orders.ViewOrderController" hgap="10" vgap="10">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="Order ID:" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+    <Label fx:id="orderIdLabel" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+    <Label text="Customer ID:" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+    <Label fx:id="customerIdLabel" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+    <Label text="Employee ID:" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+    <Label fx:id="employeeIdLabel" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+    <Label text="Product ID:" GridPane.rowIndex="3" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+    <Label fx:id="productIdLabel" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+    <Label text="Date:" GridPane.rowIndex="4" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+    <Label fx:id="dateLabel" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+    <Label text="Total Amount:" GridPane.rowIndex="5" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+    <Label fx:id="totalAmountLabel" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+    <Label text="Status:" GridPane.rowIndex="6" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+    <Label fx:id="statusLabel" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+</GridPane>
