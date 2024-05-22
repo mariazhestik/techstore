@@ -4,12 +4,17 @@ import com.example.techstore.Database.DatabaseConnection;
 import com.example.techstore.Models.Delivery;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -22,16 +27,57 @@ import java.sql.SQLException;
 public class DeliveriesController {
 
     @FXML
-    private ListView<Delivery> deliveriesListView;
+    private TableView<Delivery> deliveriesTableView;
+    @FXML
+    private TableColumn<Delivery, Integer> deliveryIdColumn;
+    @FXML
+    private TableColumn<Delivery, Integer> productIdColumn;
+    @FXML
+    private TableColumn<Delivery, String> deliveryDateColumn;
+    @FXML
+    private TableColumn<Delivery, Integer> quantityColumn;
+    @FXML
+    private TextField searchField;
     @FXML
     private Button addButton;
 
     private ObservableList<Delivery> deliveriesList;
+    private FilteredList<Delivery> filteredData;
 
     @FXML
     public void initialize() {
         deliveriesList = FXCollections.observableArrayList();
+        filteredData = new FilteredList<>(deliveriesList, p -> true);
+
+        deliveryIdColumn.setCellValueFactory(new PropertyValueFactory<>("deliveryId"));
+        productIdColumn.setCellValueFactory(new PropertyValueFactory<>("productId"));
+        deliveryDateColumn.setCellValueFactory(new PropertyValueFactory<>("deliveryDate"));
+        quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+
+        SortedList<Delivery> sortedData = new SortedList<>(filteredData);
+        sortedData.comparatorProperty().bind(deliveriesTableView.comparatorProperty());
+
+        deliveriesTableView.setItems(sortedData);
+
         loadDeliveries();
+
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredData.setPredicate(delivery -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+                String lowerCaseFilter = newValue.toLowerCase();
+
+                if (String.valueOf(delivery.getDeliveryId()).contains(lowerCaseFilter)) {
+                    return true;
+                } else if (String.valueOf(delivery.getProductId()).contains(lowerCaseFilter)) {
+                    return true;
+                } else if (delivery.getDeliveryDate().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                }
+                return false;
+            });
+        });
     }
 
     private void loadDeliveries() {
@@ -50,8 +96,6 @@ public class DeliveriesController {
                 Delivery delivery = new Delivery(deliveryId, productId, deliveryDate, quantity);
                 deliveriesList.add(delivery);
             }
-
-            deliveriesListView.setItems(deliveriesList);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -78,7 +122,7 @@ public class DeliveriesController {
 
     @FXML
     private void switchToEditDelivery() {
-        Delivery selectedDelivery = deliveriesListView.getSelectionModel().getSelectedItem();
+        Delivery selectedDelivery = deliveriesTableView.getSelectionModel().getSelectedItem();
         if (selectedDelivery != null) {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/techstore/Views/EditDelivery.fxml"));
@@ -103,7 +147,7 @@ public class DeliveriesController {
 
     @FXML
     private void switchToViewDelivery() {
-        Delivery selectedDelivery = deliveriesListView.getSelectionModel().getSelectedItem();
+        Delivery selectedDelivery = deliveriesTableView.getSelectionModel().getSelectedItem();
         if (selectedDelivery != null) {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/techstore/Views/ViewDelivery.fxml"));
@@ -126,7 +170,7 @@ public class DeliveriesController {
 
     @FXML
     private void switchToDeleteDelivery() {
-        Delivery selectedDelivery = deliveriesListView.getSelectionModel().getSelectedItem();
+        Delivery selectedDelivery = deliveriesTableView.getSelectionModel().getSelectedItem();
         if (selectedDelivery != null) {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/techstore/Views/DeleteDelivery.fxml"));

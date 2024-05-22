@@ -13,6 +13,8 @@ module com.example.techstore {
     opens com.example.techstore.Controllers.Admin.customers to javafx.fxml;
     opens com.example.techstore.Controllers.Admin.deliveries to javafx.fxml;
     opens com.example.techstore.Controllers.Admin.store_inventory to javafx.fxml;
+    opens com.example.techstore.Controllers.Admin.brands to javafx.fxml;
+    opens com.example.techstore.Controllers.Admin.employees to javafx.fxml;
 
     exports com.example.techstore;
     exports com.example.techstore.Controllers.Admin;

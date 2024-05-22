@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 
 -- Структура таблицы `brand`
 CREATE TABLE `brand` (
-                         `brand_id` int(11) NOT NULL,
+                         `brand_id` int(11) NOT NULL AUTO_INCREMENT,
                          `name` varchar(255) DEFAULT NULL,
                          PRIMARY KEY (`brand_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -75,7 +75,7 @@ INSERT INTO `delivery` (`delivery_id`, `product_id`, `date`, `quantity`) VALUES
 
 -- Структура таблицы `employee`
 CREATE TABLE `employee` (
-                            `employee_id` int(11) NOT NULL,
+                            `employee_id` int(11) NOT NULL AUTO_INCREMENT,
                             `name` varchar(255) DEFAULT NULL,
                             PRIMARY KEY (`employee_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

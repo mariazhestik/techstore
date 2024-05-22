@@ -14,9 +14,11 @@
             </padding>
             <Button text="Products" onAction="#handleManageProducts"/>
             <Button text="Orders" onAction="#handleManageOrders"/>
-            <Button text="Customers" onAction="#handleManageCustomers"/>
             <Button text="Deliveries" onAction="#handleManageDeliveries"/>
             <Button text="Store Inventory" onAction="#handleManageStoreInventory"/>
+            <Button text="Brands" onAction="#handleManageBrands"/>
+            <Button text="Customers" onAction="#handleManageCustomers"/>
+            <Button text="Employees" onAction="#handleManageEmployees"/>
         </HBox>
     </top>
     <center>

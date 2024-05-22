@@ -3,12 +3,10 @@ package com.example.techstore.Models;
 public class Employee {
     private int employeeId;
     private String name;
-    private String position;
 
-    public Employee(int employeeId, String name, String position) {
+    public Employee(int employeeId, String name) {
         this.employeeId = employeeId;
         this.name = name;
-        this.position = position;
     }
 
     public int getEmployeeId() {
@@ -27,11 +25,8 @@ public class Employee {
         this.name = name;
     }
 
-    public String getPosition() {
-        return position;
-    }
-
-    public void setPosition(String position) {
-        this.position = position;
+    @Override
+    public String toString() {
+        return name;
     }
 }

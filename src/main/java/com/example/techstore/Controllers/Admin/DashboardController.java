@@ -39,6 +39,20 @@ public class DashboardController {
         loadView("/com/example/techstore/Views/store_inventory.fxml");
     }
 
+    @FXML
+    private void handleManageBrands(ActionEvent event) {
+        loadView("/com/example/techstore/Views/BrandsView.fxml");
+    }
+
+    @FXML
+    private void handleManageEmployees(ActionEvent event) {
+        loadView("/com/example/techstore/Views/EmployeesView.fxml");
+    }
+
+    // Метод для загрузки вида продуктов сразу после аутентификации
+    public void loadProductsView() {
+        loadView("/com/example/techstore/Views/ProductsView.fxml");
+    }
 
     private void loadView(String fxmlPath) {
         try {
