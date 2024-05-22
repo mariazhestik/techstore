@@ -14,14 +14,11 @@ public class ViewDeliveryController {
     private Label deliveryDateLabel;
     @FXML
     private Label quantityLabel;
-    @FXML
-    private Label employeeIdLabel;
 
     public void setDelivery(Delivery delivery) {
         deliveryIdLabel.setText(String.valueOf(delivery.getDeliveryId()));
         productIdLabel.setText(String.valueOf(delivery.getProductId()));
         deliveryDateLabel.setText(delivery.getDeliveryDate());
         quantityLabel.setText(String.valueOf(delivery.getQuantity()));
-        employeeIdLabel.setText(String.valueOf(delivery.getEmployeeId()));
     }
 }

@@ -46,9 +46,8 @@ public class DeliveriesController {
                 int productId = resultSet.getInt("product_id");
                 String deliveryDate = resultSet.getString("date");
                 int quantity = resultSet.getInt("quantity");
-                int employeeId = resultSet.getInt("employee_id");
 
-                Delivery delivery = new Delivery(deliveryId, productId, deliveryDate, quantity, employeeId);
+                Delivery delivery = new Delivery(deliveryId, productId, deliveryDate, quantity);
                 deliveriesList.add(delivery);
             }
 

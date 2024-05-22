@@ -16,6 +16,7 @@
             <Button text="Orders" onAction="#handleManageOrders"/>
             <Button text="Customers" onAction="#handleManageCustomers"/>
             <Button text="Deliveries" onAction="#handleManageDeliveries"/>
+            <Button text="Store Inventory" onAction="#handleManageStoreInventory"/>
         </HBox>
     </top>
     <center>

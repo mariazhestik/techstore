@@ -1,14 +1,12 @@
-package com.example.techstore.Controllers.Admin.deliveries;
+package com.example.techstore.Controllers.Admin.store_inventory;
 
 import com.example.techstore.Database.DatabaseConnection;
-import com.example.techstore.Models.Delivery;
+import com.example.techstore.Models.StoreInventory;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -17,31 +15,24 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class EditDeliveryController {
+public class EditStoreInventoryController {
 
     @FXML
     private ComboBox<String> productIdComboBox;
     @FXML
-    private DatePicker deliveryDatePicker;
-    @FXML
     private TextField quantityField;
-    @FXML
-    private Button saveButton;
-    @FXML
-    private Button cancelButton;
 
-    private Delivery delivery;
+    private StoreInventory storeInventory;
+
+    public void setStoreInventory(StoreInventory storeInventory) {
+        this.storeInventory = storeInventory;
+        productIdComboBox.setValue(String.valueOf(storeInventory.getProductId()));
+        quantityField.setText(String.valueOf(storeInventory.getQuantity()));
+    }
 
     @FXML
     public void initialize() {
         loadProductIds();
-    }
-
-    public void setDelivery(Delivery delivery) {
-        this.delivery = delivery;
-        productIdComboBox.setValue(delivery.getProductId() + " - " + getProductName(delivery.getProductId()));
-        deliveryDatePicker.setValue(java.time.LocalDate.parse(delivery.getDeliveryDate()));
-        quantityField.setText(String.valueOf(delivery.getQuantity()));
     }
 
     private void loadProductIds() {
@@ -64,30 +55,28 @@ public class EditDeliveryController {
     }
 
     @FXML
-    private void handleSaveDelivery() {
+    private void handleSaveStoreInventory() {
         try {
             int productId = extractId(productIdComboBox.getValue());
-            String deliveryDate = deliveryDatePicker.getValue().toString();
             int quantity = Integer.parseInt(quantityField.getText());
 
-            String query = "UPDATE delivery SET product_id = ?, date = ?, quantity = ? WHERE delivery_id = ?";
+            String query = "UPDATE store_inventory SET product_id = ?, quantity = ? WHERE store_inventory_id = ?";
 
             try (Connection connection = DatabaseConnection.getConnection();
                  PreparedStatement statement = connection.prepareStatement(query)) {
 
                 statement.setInt(1, productId);
-                statement.setString(2, deliveryDate);
-                statement.setInt(3, quantity);
-                statement.setInt(4, delivery.getDeliveryId());
+                statement.setInt(2, quantity);
+                statement.setInt(3, storeInventory.getStoreInventoryId());
 
                 int rowsUpdated = statement.executeUpdate();
                 if (rowsUpdated > 0) {
-                    showAlert(Alert.AlertType.INFORMATION, "Delivery updated successfully!");
+                    showAlert(Alert.AlertType.INFORMATION, "Store inventory updated successfully!");
                     closeWindow();
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
-                showAlert(Alert.AlertType.ERROR, "Error updating delivery: " + e.getMessage());
+                showAlert(Alert.AlertType.ERROR, "Error updating store inventory: " + e.getMessage());
             }
         } catch (NumberFormatException e) {
             showAlert(Alert.AlertType.ERROR, "Invalid input: " + e.getMessage());
@@ -102,36 +91,16 @@ public class EditDeliveryController {
         }
     }
 
-    private String getProductName(int productId) {
-        String query = "SELECT name FROM product WHERE product_id = ?";
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, productId);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                return resultSet.getString("name");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-
     private void showAlert(Alert.AlertType alertType, String message) {
         Alert alert = new Alert(alertType);
-        alert.setTitle("Delivery Update");
+        alert.setTitle("Store Inventory Update");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
     }
 
-    @FXML
-    private void handleCancel() {
-        closeWindow();
-    }
-
     private void closeWindow() {
-        Stage stage = (Stage) saveButton.getScene().getWindow();
+        Stage stage = (Stage) productIdComboBox.getScene().getWindow();
         stage.close();
     }
 }

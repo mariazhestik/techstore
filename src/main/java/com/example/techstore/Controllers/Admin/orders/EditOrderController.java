@@ -99,7 +99,7 @@ public class EditOrderController {
     }
 
     private void loadStatusOptions() {
-        ObservableList<String> statusOptions = FXCollections.observableArrayList("Completed", "Processing", "Pending");
+        ObservableList<String> statusOptions = FXCollections.observableArrayList("Completed", "Processing", "Pending", "Canceled");
         statusComboBox.setItems(statusOptions);
     }
 
@@ -169,7 +169,8 @@ public class EditOrderController {
             int productId = extractId(productIdComboBox.getValue());
             String date = datePicker.getValue().toString();
             double totalAmount = Double.parseDouble(totalAmountField.getText());
-            String status = statusComboBox.getValue();
+            String newStatus = statusComboBox.getValue();
+            String oldStatus = order.getStatus();
 
             String query = "UPDATE orders SET customer_id = ?, employee_id = ?, product_id = ?, date = ?, total_amount = ?, status = ? WHERE order_id = ?";
 
@@ -181,11 +182,14 @@ public class EditOrderController {
                 statement.setInt(3, productId);
                 statement.setString(4, date);
                 statement.setDouble(5, totalAmount);
-                statement.setString(6, status);
+                statement.setString(6, newStatus);
                 statement.setInt(7, order.getOrderId());
 
                 int rowsUpdated = statement.executeUpdate();
                 if (rowsUpdated > 0) {
+                    if (!oldStatus.equals(newStatus)) {
+                        updateInventory(productId, oldStatus, newStatus);
+                    }
                     showAlert(Alert.AlertType.INFORMATION, "Order updated successfully!");
                     closeWindow();
                 }
@@ -197,6 +201,64 @@ public class EditOrderController {
             showAlert(Alert.AlertType.ERROR, "Invalid input: " + e.getMessage());
         }
     }
+
+    private void updateInventory(int productId, String oldStatus, String newStatus) {
+        int quantityChange = 0;
+        if (oldStatus.equals("Canceled") && !newStatus.equals("Canceled")) {
+            quantityChange = -1;
+        } else if (!oldStatus.equals("Canceled") && newStatus.equals("Canceled")) {
+            quantityChange = 1;
+        }
+        if (quantityChange != 0) {
+            String query = "UPDATE store_inventory SET quantity = quantity + ? WHERE product_id = ?";
+            try (Connection connection = DatabaseConnection.getConnection();
+                 PreparedStatement statement = connection.prepareStatement(query)) {
+                int oldQuantity = getCurrentQuantity(productId);
+                statement.setInt(1, quantityChange);
+                statement.setInt(2, productId);
+                statement.executeUpdate();
+                int newQuantity = oldQuantity + quantityChange;
+                logInventoryChange(productId, oldQuantity, newQuantity, "Status change: " + oldStatus + " to " + newStatus);
+                System.out.println("Updated inventory for product " + productId + ": oldQuantity=" + oldQuantity + ", newQuantity=" + newQuantity);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                showAlert(Alert.AlertType.ERROR, "Error updating inventory: " + e.getMessage());
+            }
+        }
+    }
+
+    private void logInventoryChange(int productId, int oldQuantity, int newQuantity, String reason) {
+        System.out.println("Inventory change for product " + productId + ": oldQuantity=" + oldQuantity + ", newQuantity=" + newQuantity + ", reason=" + reason);
+        String query = "INSERT INTO change_log (product_id, old_quantity, new_quantity, change_reason) VALUES (?, ?, ?, ?)";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, productId);
+            statement.setInt(2, oldQuantity);
+            statement.setInt(3, newQuantity);
+            statement.setString(4, reason);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error logging inventory change: " + e.getMessage());
+        }
+    }
+
+    private int getCurrentQuantity(int productId) {
+        String query = "SELECT quantity FROM store_inventory WHERE product_id = ?";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, productId);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt("quantity");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+
 
     private int extractId(String comboBoxValue) {
         if (comboBoxValue != null && comboBoxValue.contains(" - ")) {

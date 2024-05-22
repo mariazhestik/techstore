@@ -12,11 +12,11 @@ START TRANSACTION;
 SET time_zone = "+00:00";
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
--- Структура таблиці `brand`
+-- Структура таблицы `brand`
 CREATE TABLE `brand` (
                          `brand_id` int(11) NOT NULL,
                          `name` varchar(255) DEFAULT NULL,
@@ -35,7 +35,7 @@ INSERT INTO `brand` (`brand_id`, `name`) VALUES
                                              (9, 'Motorola'),
                                              (10, 'Nokia');
 
--- Структура таблиці `customer`
+-- Структура таблицы `customer`
 CREATE TABLE `customer` (
                             `customer_id` int(11) NOT NULL AUTO_INCREMENT,
                             `name` varchar(255) DEFAULT NULL,
@@ -51,7 +51,7 @@ INSERT INTO `customer` (`customer_id`, `name`, `contact`, `address`) VALUES
                                                                          (4, 'Emily Brown', '234-567-8901', '456 Pine St'),
                                                                          (5, 'David Wilson', '890-123-4567', '789 Maple St');
 
--- Структура таблиці `delivery`
+-- Структура таблицы `delivery`
 CREATE TABLE `delivery` (
                             `delivery_id` int(11) NOT NULL AUTO_INCREMENT,
                             `product_id` int(11) DEFAULT NULL,
@@ -73,13 +73,7 @@ INSERT INTO `delivery` (`delivery_id`, `product_id`, `date`, `quantity`) VALUES
                                                                              (9, 9, '2024-05-22', 15),
                                                                              (10, 10, '2024-05-23', 8);
 
-CREATE TRIGGER `delivery_trigger` AFTER INSERT ON `delivery` FOR EACH ROW BEGIN
-    IF NEW.quantity <= 0 THEN
-        UPDATE Product SET status = 'Out of Stock' WHERE product_id = NEW.product_id;
-    END IF;
-END;
-
--- Структура таблиці `employee`
+-- Структура таблицы `employee`
 CREATE TABLE `employee` (
                             `employee_id` int(11) NOT NULL,
                             `name` varchar(255) DEFAULT NULL,
@@ -93,7 +87,7 @@ INSERT INTO `employee` (`employee_id`, `name`) VALUES
                                                    (4, 'Eva Black'),
                                                    (5, 'Frank Red');
 
--- Структура таблиці `orders`
+-- Структура таблицы `orders`
 CREATE TABLE `orders` (
                           `order_id` int(11) NOT NULL AUTO_INCREMENT,
                           `customer_id` int(11) DEFAULT NULL,
@@ -120,7 +114,7 @@ INSERT INTO `orders` (`order_id`, `customer_id`, `employee_id`, `product_id`, `d
                                                                                                                     (9, 4, 4, 9, '2024-05-22', 499.99, 'Completed'),
                                                                                                                     (10, 5, 5, 10, '2024-05-23', 499.99, 'Processing');
 
--- Структура таблиці `product`
+-- Структура таблицы `product`
 CREATE TABLE `product` (
                            `product_id` int(11) NOT NULL AUTO_INCREMENT,
                            `brand_id` int(11) DEFAULT NULL,
@@ -151,9 +145,9 @@ INSERT INTO `product` (`product_id`, `brand_id`, `name`, `price`, `processor`, `
                                                                                                                                                                                  (9, 9, 'Motorola Edge', 499.99, 'Snapdragon 765G', '128GB', '6GB', 'OLED', 'Glass', 'Blue', '6.7"', '4500mAh', 'Available'),
                                                                                                                                                                                  (10, 10, 'Nokia 8.3 5G', 499.99, 'Snapdragon 765G', '128GB', '8GB', 'IPS LCD', 'Glass', 'Gray', '6.81"', '4500mAh', 'Available');
 
--- Структура таблиці `store_inventory`
+-- Структура таблицы `store_inventory`
 CREATE TABLE `store_inventory` (
-                                   `store_inventory_id` int(11) NOT NULL,
+                                   `store_inventory_id` int(11) NOT NULL AUTO_INCREMENT,
                                    `product_id` int(11) DEFAULT NULL,
                                    `quantity` int(11) DEFAULT NULL,
                                    PRIMARY KEY (`store_inventory_id`),
@@ -172,13 +166,111 @@ INSERT INTO `store_inventory` (`store_inventory_id`, `product_id`, `quantity`) V
                                                                                    (9, 9, 30),
                                                                                    (10, 10, 16);
 
-CREATE TRIGGER `store_inventory_trigger` AFTER UPDATE ON `store_inventory` FOR EACH ROW BEGIN
-    IF NEW.quantity <= 0 THEN
-        UPDATE Product SET status = 'Out of Stock' WHERE product_id = NEW.product_id;
+-- Триггер для обновления store_inventory после вставки в delivery
+CREATE TRIGGER `delivery_trigger`
+    AFTER INSERT ON `delivery`
+    FOR EACH ROW
+BEGIN
+    UPDATE store_inventory
+    SET quantity = quantity + NEW.quantity
+    WHERE product_id = NEW.product_id;
+END;
+
+-- Триггер для обновления store_inventory после обновления в delivery
+CREATE TRIGGER `delivery_update_trigger`
+    BEFORE UPDATE ON `delivery`
+    FOR EACH ROW
+BEGIN
+    DECLARE quantity_diff INT;
+
+    -- Вычисление разницы между новым и старым количеством
+    SET quantity_diff = NEW.quantity - OLD.quantity;
+
+    -- Обновление количества товаров в store_inventory
+    UPDATE store_inventory
+    SET quantity = quantity + quantity_diff
+    WHERE product_id = NEW.product_id;
+
+    -- Если изменился product_id, корректируем количество для старого и нового product_id
+    IF NEW.product_id != OLD.product_id THEN
+        -- Уменьшаем количество для старого product_id
+        UPDATE store_inventory
+        SET quantity = quantity - OLD.quantity
+        WHERE product_id = OLD.product_id;
+
+        -- Увеличиваем количество для нового product_id
+        UPDATE store_inventory
+        SET quantity = quantity + NEW.quantity
+        WHERE product_id = NEW.product_id;
     END IF;
 END;
 
--- Обмеження зовнішнього ключа збережених таблиць
+
+CREATE TRIGGER `order_trigger`
+    AFTER INSERT ON `orders`
+    FOR EACH ROW
+BEGIN
+    UPDATE store_inventory
+    SET quantity = quantity - 1
+    WHERE product_id = NEW.product_id;
+END;
+
+-- Триггер для обновления статуса продукта при обновлении store_inventory
+CREATE TRIGGER `store_inventory_trigger`
+    AFTER UPDATE ON `store_inventory`
+    FOR EACH ROW
+BEGIN
+    IF NEW.quantity <= 0 THEN
+        UPDATE product
+        SET status = 'Out of Stock'
+        WHERE product_id = NEW.product_id;
+    ELSEIF NEW.quantity > 0 THEN
+        UPDATE product
+        SET status = 'Available'
+        WHERE product_id = NEW.product_id;
+    END IF;
+END;
+
+
+-- Триггер для обновления store_inventory после удаления из delivery
+CREATE TRIGGER `delivery_delete_trigger`
+    BEFORE DELETE ON `delivery`
+    FOR EACH ROW
+BEGIN
+    -- Уменьшаем количество товаров в store_inventory на количество удаляемой доставки
+    UPDATE store_inventory
+    SET quantity = quantity - OLD.quantity
+    WHERE product_id = OLD.product_id;
+END;
+
+-- Триггер для обновления store_inventory после обновления в orders
+CREATE TRIGGER `order_update_trigger`
+    BEFORE UPDATE ON `orders`
+    FOR EACH ROW
+BEGIN
+    -- Проверка наличия нового продукта на складе
+    DECLARE new_product_quantity INT;
+    SET new_product_quantity = (SELECT quantity FROM store_inventory WHERE product_id = NEW.product_id);
+
+    IF new_product_quantity <= 0 THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Insufficient stock for the new product.';
+    ELSE
+        -- Вернуть старый продукт на склад
+        UPDATE store_inventory
+        SET quantity = quantity + 1
+        WHERE product_id = OLD.product_id;
+
+        -- Уменьшить количество нового продукта на складе
+        UPDATE store_inventory
+        SET quantity = quantity - 1
+        WHERE product_id = NEW.product_id;
+    END IF;
+END;
+
+
+
+-- Ограничения внешнего ключа сохраненных таблиц
 ALTER TABLE `delivery`
     ADD CONSTRAINT `delivery_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`);
 

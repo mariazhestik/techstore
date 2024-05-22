@@ -34,6 +34,12 @@ public class DashboardController {
         loadView("/com/example/techstore/Views/DeliveriesView.fxml");
     }
 
+    @FXML
+    private void handleManageStoreInventory(ActionEvent event) {
+        loadView("/com/example/techstore/Views/store_inventory.fxml");
+    }
+
+
     private void loadView(String fxmlPath) {
         try {
             Parent view = FXMLLoader.load(getClass().getResource(fxmlPath));

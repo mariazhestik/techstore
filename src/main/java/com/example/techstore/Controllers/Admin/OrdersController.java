@@ -76,12 +76,9 @@ public class OrdersController {
                     return true;
                 }
                 String lowerCaseFilter = newValue.toLowerCase();
-
-                if (order.getDate().toLowerCase().contains(lowerCaseFilter)) {
-                    return true;
-                } else if (String.valueOf(order.getOrderId()).contains(lowerCaseFilter)) {
-                    return true;
-                } else if (order.getStatus().toLowerCase().contains(lowerCaseFilter)) {
+                if (order.getDate().toLowerCase().contains(lowerCaseFilter) ||
+                        String.valueOf(order.getOrderId()).contains(lowerCaseFilter) ||
+                        order.getStatus().toLowerCase().contains(lowerCaseFilter)) {
                     return true;
                 }
                 return false;
@@ -124,8 +121,6 @@ public class OrdersController {
             stage.setTitle("Add Order");
             stage.setScene(new Scene(root));
             stage.showAndWait();
-
-            // Reload orders after adding new order
             loadOrders();
         } catch (Exception e) {
             e.printStackTrace();
@@ -139,17 +134,13 @@ public class OrdersController {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/techstore/Views/EditOrder.fxml"));
                 Parent root = loader.load();
-
                 EditOrderController controller = loader.getController();
                 controller.setOrder(selectedOrder);
-
                 Stage stage = new Stage();
                 stage.initModality(Modality.APPLICATION_MODAL);
                 stage.setTitle("Edit Order");
                 stage.setScene(new Scene(root));
                 stage.showAndWait();
-
-                // Reload orders after editing
                 loadOrders();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -164,16 +155,13 @@ public class OrdersController {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/techstore/Views/ViewOrder.fxml"));
                 Parent root = loader.load();
-
                 ViewOrderController controller = loader.getController();
                 controller.setOrder(selectedOrder);
-
                 Stage stage = new Stage();
                 stage.initModality(Modality.APPLICATION_MODAL);
                 stage.setTitle("View Order");
                 stage.setScene(new Scene(root));
                 stage.showAndWait();
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -187,17 +175,13 @@ public class OrdersController {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/techstore/Views/DeleteOrder.fxml"));
                 Parent root = loader.load();
-
                 DeleteOrderController controller = loader.getController();
                 controller.setOrder(selectedOrder);
-
                 Stage stage = new Stage();
                 stage.initModality(Modality.APPLICATION_MODAL);
                 stage.setTitle("Delete Order");
                 stage.setScene(new Scene(root));
                 stage.showAndWait();
-
-                // Reload orders after deleting
                 loadOrders();
             } catch (IOException e) {
                 e.printStackTrace();

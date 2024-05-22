@@ -20,7 +20,4 @@
 
     <Label text="Quantity:" GridPane.rowIndex="3" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
     <Label fx:id="quantityLabel" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
-
-    <Label text="Employee ID:" GridPane.rowIndex="4" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
-    <Label fx:id="employeeIdLabel" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
 </GridPane>

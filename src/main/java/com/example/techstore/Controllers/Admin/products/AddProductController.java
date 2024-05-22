@@ -4,15 +4,13 @@ import com.example.techstore.Database.DatabaseConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import com.example.techstore.Models.Product;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class AddProductController {
 
@@ -137,7 +135,7 @@ public class AddProductController {
         String query = "INSERT INTO product (brand_id, name, price, processor, memory, RAM, screenType, materialOfCorps, colour, dimension, Battery, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
             statement.setInt(1, brandId);
             statement.setString(2, name);
@@ -154,14 +152,49 @@ public class AddProductController {
 
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted > 0) {
-                showAlert(Alert.AlertType.INFORMATION, "Product added successfully!");
-                closeWindow();
+                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        int productId = generatedKeys.getInt(1);
+                        addStoreInventoryEntry(productId);
+                        showAlert(Alert.AlertType.INFORMATION, "Product added successfully!");
+                        closeWindow();
+                    }
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Error adding product: " + e.getMessage());
         }
     }
+
+    private void addStoreInventoryEntry(int productId) throws SQLException {
+        String query = "INSERT INTO store_inventory (product_id, quantity) VALUES (?, 0)";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, productId);
+            statement.executeUpdate();
+        }
+    }
+
+
+    private void updateProductStatus(int productId, int newQuantity) {
+        String newStatus = newQuantity <= 0 ? "Out of Stock" : "Available";
+        String query = "UPDATE product SET status = ? WHERE product_id = ?";
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setString(1, newStatus);
+            statement.setInt(2, productId);
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error updating product status: " + e.getMessage());
+        }
+    }
+
+
 
     private int extractId(String comboBoxValue) {
         if (comboBoxValue != null && comboBoxValue.contains(" - ")) {

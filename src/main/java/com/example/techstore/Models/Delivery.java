@@ -5,14 +5,12 @@ public class Delivery {
     private int productId;
     private String deliveryDate;
     private int quantity;
-    private int employeeId;
 
-    public Delivery(int deliveryId, int productId, String deliveryDate, int quantity, int employeeId) {
+    public Delivery(int deliveryId, int productId, String deliveryDate, int quantity) {
         this.deliveryId = deliveryId;
         this.productId = productId;
         this.deliveryDate = deliveryDate;
         this.quantity = quantity;
-        this.employeeId = employeeId;
     }
 
     public int getDeliveryId() {
@@ -47,18 +45,8 @@ public class Delivery {
         this.quantity = quantity;
     }
 
-    public int getEmployeeId() {
-        return employeeId;
-    }
-
-    public void setEmployeeId(int employeeId) {
-        this.employeeId = employeeId;
-    }
-
     @Override
     public String toString() {
-        return "Delivery ID: " + deliveryId + ", Product ID: " + productId + ", Date: " + deliveryDate + ", Quantity: " + quantity + ", Employee ID: " + employeeId;
+        return "Delivery ID: " + deliveryId + ", Product ID: " + productId + ", Date: " + deliveryDate + ", Quantity: " + quantity;
     }
-
 }
-

@@ -11,10 +11,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class AddDeliveryController {
 
@@ -25,8 +22,6 @@ public class AddDeliveryController {
     @FXML
     private TextField quantityField;
     @FXML
-    private ComboBox<String> employeeIdComboBox;
-    @FXML
     private Button addButton;
     @FXML
     private Button cancelButton;
@@ -34,7 +29,6 @@ public class AddDeliveryController {
     @FXML
     public void initialize() {
         loadProductIds();
-        loadEmployeeIds();
     }
 
     private void loadProductIds() {
@@ -56,42 +50,21 @@ public class AddDeliveryController {
         }
     }
 
-    private void loadEmployeeIds() {
-        ObservableList<String> employeeIds = FXCollections.observableArrayList();
-        String query = "SELECT employee_id, name FROM employee";
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query);
-             ResultSet resultSet = statement.executeQuery()) {
-
-            while (resultSet.next()) {
-                int employeeId = resultSet.getInt("employee_id");
-                String name = resultSet.getString("name");
-                employeeIds.add(employeeId + " - " + name);
-            }
-            employeeIdComboBox.setItems(employeeIds);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Error loading employee IDs: " + e.getMessage());
-        }
-    }
-
     @FXML
     private void handleAddDelivery() {
         try {
             int productId = extractId(productIdComboBox.getValue());
-            int employeeId = extractId(employeeIdComboBox.getValue());
             String deliveryDate = deliveryDatePicker.getValue().toString();
             int quantity = Integer.parseInt(quantityField.getText());
 
-            String query = "INSERT INTO delivery (product_id, date, quantity, employee_id) VALUES (?, ?, ?, ?)";
+            String query = "INSERT INTO delivery (product_id, date, quantity) VALUES (?, ?, ?)";
 
             try (Connection connection = DatabaseConnection.getConnection();
-                 PreparedStatement statement = connection.prepareStatement(query)) {
+                 PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
                 statement.setInt(1, productId);
                 statement.setString(2, deliveryDate);
                 statement.setInt(3, quantity);
-                statement.setInt(4, employeeId);
 
                 int rowsInserted = statement.executeUpdate();
                 if (rowsInserted > 0) {

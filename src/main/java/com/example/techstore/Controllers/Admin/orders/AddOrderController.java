@@ -36,6 +36,8 @@ public class AddOrderController {
         loadEmployeeIds();
         loadProductIds();
         loadStatusOptions();
+
+        productIdComboBox.setOnAction(event -> handleProductSelection());
     }
 
     private void loadCustomerIds() {
@@ -100,6 +102,45 @@ public class AddOrderController {
         statusComboBox.setItems(statusOptions);
     }
 
+    private void handleProductSelection() {
+        String selectedProduct = productIdComboBox.getValue();
+        if (selectedProduct != null) {
+            int productId = extractId(selectedProduct);
+            String query = "SELECT price FROM product WHERE product_id = ?";
+            try (Connection connection = DatabaseConnection.getConnection();
+                 PreparedStatement statement = connection.prepareStatement(query)) {
+
+                statement.setInt(1, productId);
+                ResultSet resultSet = statement.executeQuery();
+                if (resultSet.next()) {
+                    double price = resultSet.getDouble("price");
+                    totalAmountField.setText(String.valueOf(price));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                showAlert(Alert.AlertType.ERROR, "Error retrieving product price: " + e.getMessage());
+            }
+        }
+    }
+
+    private boolean isProductAvailable(int productId) {
+        String query = "SELECT quantity, status FROM store_inventory JOIN product ON store_inventory.product_id = product.product_id WHERE store_inventory.product_id = ?";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, productId);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                int quantity = resultSet.getInt("quantity");
+                String status = resultSet.getString("status");
+                return quantity > 0 && !status.equals("Out of Stock") && !status.equals("Discontinued");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error checking product availability: " + e.getMessage());
+        }
+        return false;
+    }
+
     @FXML
     private void handleAddOrder() {
         try {
@@ -109,6 +150,11 @@ public class AddOrderController {
             String date = datePicker.getValue().toString();
             double totalAmount = Double.parseDouble(totalAmountField.getText());
             String status = statusComboBox.getValue();
+
+            if (!isProductAvailable(productId)) {
+                showAlert(Alert.AlertType.ERROR, "Product is not available for order.");
+                return;
+            }
 
             String query = "INSERT INTO orders (customer_id, employee_id, product_id, date, total_amount, status) VALUES (?, ?, ?, ?, ?, ?)";
 
