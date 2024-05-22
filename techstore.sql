@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS `product`;
 DROP TABLE IF EXISTS `employee`;
 DROP TABLE IF EXISTS `customer`;
 DROP TABLE IF EXISTS `brand`;
+DROP TABLE IF EXISTS `admin`;
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -15,6 +16,18 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
+
+
+-- Структура таблицы `admin`
+CREATE TABLE `admin` (
+                         `admin_id` int(11) NOT NULL AUTO_INCREMENT,
+                         `username` varchar(255) DEFAULT NULL,
+                         `password` varchar(255) DEFAULT NULL,
+                         PRIMARY KEY (`admin_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `admin` (`username`, `password`) VALUES
+    ('admin', 'admin');
 
 -- Структура таблицы `brand`
 CREATE TABLE `brand` (
